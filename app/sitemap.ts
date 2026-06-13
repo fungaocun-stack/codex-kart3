@@ -1,0 +1,2 @@
+import type { MetadataRoute } from "next";import { getProducts, getProjects } from "@/lib/data";
+export default async function sitemap():Promise<MetadataRoute.Sitemap>{const b=process.env.NEXT_PUBLIC_SITE_URL||"http://localhost:3000";return["","/products","/projects","/contact"].map(x=>({url:b+x,lastModified:new Date()})).concat((await getProducts()).map(p=>({url:`${b}/products/${p.slug}`,lastModified:new Date()})),(await getProjects()).map(p=>({url:`${b}/projects/${p.slug}`,lastModified:new Date()})))}

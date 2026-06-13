@@ -1,0 +1,13 @@
+VORTKART Supabase 数据库安装顺序
+
+1. 打开 setup.sql，复制全部内容到 Supabase SQL Editor，然后点击 Run。
+2. 成功时结果会显示：VORTKART database setup completed。
+3. 前往 Authentication > Users 创建一个后台登录用户。
+4. 打开 add-admin.sql，把 YOUR_ADMIN_EMAIL@example.com 替换成刚创建的邮箱。
+5. 把修改后的 add-admin.sql 复制到新的 SQL Editor 查询，然后点击 Run。
+
+注意：
+- 不要把 README.md 复制到 SQL Editor。
+- 出现 syntax error at or near "#"，说明错误地复制了 Markdown 文档。
+- setup.sql 可以重复运行。
+- add-admin.sql 运行前必须先创建 Authentication 用户。

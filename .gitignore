@@ -1,0 +1,9 @@
+node_modules
+.next
+.next-dev
+.env.local
+coverage
+.vercel
+*.log
+*.tsbuildinfo
+tsconfig.corrupt-backup
