@@ -7,6 +7,8 @@ export function Footer({ navigation, settings }: { navigation: NavigationLink[];
     : [
         { label: "Products", href: "/products" },
         { label: "Racing Stories", href: "/projects" },
+        { label: "Culture", href: "/#culture" },
+        { label: "Technology", href: "/#technology" },
         { label: "Contact", href: "/contact" }
       ];
 

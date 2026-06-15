@@ -34,6 +34,11 @@ function fallbackColor(value: string | undefined, fallback: string) {
   return typeof value === "string" && colorPattern.test(value) ? value : fallback;
 }
 
+function hexToRgbChannels(value: string) {
+  const hex = value.replace("#", "");
+  return `${Number.parseInt(hex.slice(0, 2), 16)} ${Number.parseInt(hex.slice(2, 4), 16)} ${Number.parseInt(hex.slice(4, 6), 16)}`;
+}
+
 export function normalizeTheme(theme: CmsTheme | null | undefined) {
   return {
     primary: fallbackColor(theme?.primary, safeTheme.primary),
@@ -47,7 +52,10 @@ export function themeStyle(theme: CmsTheme | null | undefined) {
   return {
     "--color-primary": normalized.primary,
     "--color-secondary": normalized.secondary,
-    "--color-background": normalized.background
+    "--color-background": normalized.background,
+    "--color-primary-rgb": hexToRgbChannels(normalized.primary),
+    "--color-secondary-rgb": hexToRgbChannels(normalized.secondary),
+    "--color-background-rgb": hexToRgbChannels(normalized.background)
   };
 }
 

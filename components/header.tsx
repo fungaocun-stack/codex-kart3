@@ -6,7 +6,15 @@ import type { NavigationLink, SiteSettings } from "@/lib/types";
 
 export function Header({ navigation, settings }: { navigation: NavigationLink[]; settings: SiteSettings }) {
   const [open, setOpen] = useState(false);
-  const links = navigation.length ? navigation : [{ label: "Products", href: "/products" }, { label: "Racing Stories", href: "/projects" }, { label: "Contact", href: "/contact" }];
+  const links = navigation.length
+    ? navigation
+    : [
+        { label: "Products", href: "/products" },
+        { label: "Racing Stories", href: "/projects" },
+        { label: "Culture", href: "/#culture" },
+        { label: "Technology", href: "/#technology" },
+        { label: "Contact", href: "/contact" }
+      ];
   return <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur-xl">
     <div className="mx-auto flex h-16 max-w-[1500px] items-center justify-between px-5 lg:px-10">
       <Link href="/" className="text-xl font-black tracking-[.2em] text-white"><span className="text-race">V</span>{settings.site_name || "ORTKART"}</Link>

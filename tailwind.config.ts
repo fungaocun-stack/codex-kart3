@@ -4,7 +4,11 @@ export default {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
     extend: {
-      colors: { race: "#ff5a00", ink: "#070707", steel: "#a6a6a6" },
+      colors: {
+        race: "rgb(var(--color-primary-rgb) / <alpha-value>)",
+        ink: "rgb(var(--color-background-rgb) / <alpha-value>)",
+        steel: "rgb(var(--color-secondary-rgb) / <alpha-value>)"
+      },
       fontFamily: { sans: ["Arial", "Helvetica", "sans-serif"] }
     }
   },

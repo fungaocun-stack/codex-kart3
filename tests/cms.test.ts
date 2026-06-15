@@ -11,10 +11,13 @@ describe("visual CMS contracts", () => {
   });
 
   it("creates CSS variables from the saved theme", () => {
-    expect(themeStyle({ primary: "#112233", secondary: "#abcdef", background: "#010203" })).toEqual({
+    expect(themeStyle({ primary: "#112233", secondary: "#abcdef", background: "#010203" })).toMatchObject({
       "--color-primary": "#112233",
       "--color-secondary": "#abcdef",
-      "--color-background": "#010203"
+      "--color-background": "#010203",
+      "--color-primary-rgb": "17 34 51",
+      "--color-secondary-rgb": "171 205 239",
+      "--color-background-rgb": "1 2 3"
     });
   });
 

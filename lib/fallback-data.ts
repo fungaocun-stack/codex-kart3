@@ -35,12 +35,15 @@ const navigation: SiteNavigation = {
   header: [
     { label: "Products", href: "/products" },
     { label: "Racing Stories", href: "/projects" },
-    { label: "Visual Pages", href: "/pages/home" },
+    { label: "Culture", href: "/#culture" },
+    { label: "Technology", href: "/#technology" },
     { label: "Contact", href: "/contact" }
   ],
   footer: [
     { label: "Products", href: "/products" },
     { label: "Racing Stories", href: "/projects" },
+    { label: "Culture", href: "/#culture" },
+    { label: "Technology", href: "/#technology" },
     { label: "Build Your Track", href: "/contact" }
   ]
 };

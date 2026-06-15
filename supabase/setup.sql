@@ -38,7 +38,31 @@ create table if not exists public.inquiries (
   status text not null default 'New' check (status in ('New','Contacted','Closed')),
   notes text not null default '', created_at timestamptz not null default now(), updated_at timestamptz not null default now()
 );
-insert into public.site_settings (id, seo_title, seo_description) values (1,'VORTKART | Born For Racing','Karting culture, performance machines and complete track solutions.') on conflict (id) do nothing;
+insert into public.site_settings (
+  id, logo_url, phone, email, social_links, seo_title, seo_description, hero_video_url, site_name, tagline, contact_phone, contact_email, address, logo_alt, favicon_url, og_image_url, header_cta_label, header_cta_url, footer_note, theme
+) values (
+  1, '/media/vortkart-logo.svg', '+86 000 0000 0000', 'racing@vortkart.com', '{"instagram":"#","youtube":"#","linkedin":"#"}'::jsonb,
+  'VORTKART | Born For Racing', 'Racing karts, rental fleets, electric karts and complete track solutions engineered for champions.', '', 'VORTKART', 'Born For Racing',
+  '+86 000 0000 0000', 'racing@vortkart.com', 'Karting, manufacturing and track solutions', 'VORTKART logo', '', '', 'Build your track', '/contact', '© VORTKART',
+  '{"primary":"#ff5a00","secondary":"#ffffff","background":"#070707"}'::jsonb
+) on conflict (id) do nothing;
+
+insert into public.products (name, slug, description, category, price, images, brochure_url, specs, featured, published, sort_order)
+values
+  ('KZ Racing Chassis', 'kz-racing-chassis', 'Competition-bred chassis engineered for precision, response and podium pace.', 'Racing', null, '["/media/kz-racing.png","/media/kz-angle.png"]'::jsonb, null, '{"Class":"KZ","Frame":"30/32 mm CrMo","Braking":"Hydraulic","Application":"Professional racing"}'::jsonb, true, true, 0),
+  ('OK Racing Chassis', 'ok-racing-chassis', 'A balanced, adaptable platform for serious sprint competition.', 'Racing', null, '["/media/ok-racing.png"]'::jsonb, null, '{"Class":"OK","Frame":"30 mm CrMo","Braking":"Rear hydraulic","Application":"Sprint racing"}'::jsonb, true, true, 1),
+  ('Phantom Electric Kart', 'phantom-electric-kart', 'Instant torque, low operating noise and a commanding rental-track presence.', 'Electric', null, '["/media/phantom.png","/media/phantom-angle.png"]'::jsonb, null, '{"Powertrain":"Electric","Drive":"Rear wheel","Application":"Commercial tracks","Control":"Remote speed control ready"}'::jsonb, true, true, 2),
+  ('Thunder Electric Kart', 'thunder-electric-kart', 'High-throughput electric karting built around durability and driver excitement.', 'Electric', null, '["/media/thunder.jpg"]'::jsonb, null, '{"Powertrain":"Electric","Seat":"Single","Application":"Rental operations","Bodywork":"Impact-resistant"}'::jsonb, false, true, 3),
+  ('Lightning Electric Kart', 'lightning-electric-kart', 'A lightweight, agile electric platform for youth and family venues.', 'Electric', null, '["/media/lightning.jpg"]'::jsonb, null, '{"Powertrain":"Electric","Seat":"Single","Application":"Youth & family","Safety":"Adjustable speed"}'::jsonb, false, true, 4),
+  ('FS200 Rental Kart', 'fs200-rental-kart', 'A robust petrol rental kart made for busy circuits and repeatable fun.', 'Rental', null, '["/media/fs200.png","/media/fs200-angle.png"]'::jsonb, null, '{"Engine":"200 cc petrol","Seat":"Single","Application":"Rental tracks","Protection":"Full perimeter bumper"}'::jsonb, true, true, 5),
+  ('Cyclone Electric Kart', 'cyclone-electric-kart', 'A contemporary electric rental kart for immersive entertainment venues.', 'Electric', null, '["/media/cyclone.png"]'::jsonb, null, '{"Powertrain":"Electric","Seat":"Single","Application":"Indoor & outdoor","Control":"Fleet management ready"}'::jsonb, false, true, 6)
+on conflict (slug) do nothing;
+
+insert into public.projects (title, slug, client, location, project_type, year, story, gallery, testimonial, featured, published)
+values
+  ('Built Around Race Day', 'built-around-race-day', 'VORTKART Racing Community', 'Asia', 'Championship Support', 2025, 'From the briefing room to the final corner, VORTKART supports the people and systems that turn track time into racing culture.', '["/media/story-race.jpg","/media/story-grid.jpg"]'::jsonb, 'The best racing solutions feel invisible on race day: everything simply works.', true, true),
+  ('Partners at the Track', 'partners-at-the-track', 'International Track Partners', 'Global', 'Track Solutions', 2026, 'Our teams work alongside operators, clubs and drivers to shape practical karting experiences with long-term support.', '["/media/story-partners.jpg","/media/story-track.jpg"]'::jsonb, 'A dependable partner from first discussion through opening day.', true, true)
+on conflict (slug) do nothing;
 
 alter table public.admin_users enable row level security;
 alter table public.products enable row level security;
