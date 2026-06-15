@@ -38,6 +38,7 @@ type PuckConfig = {
 };
 
 export const visualPageBlockNames = ["Hero", "RichText", "MediaGallery", "ProductShowcase", "CaseStudyShowcase", "CTA", "FaqSpecs"] as const;
+const visualPageBlockSet = new Set<string>(visualPageBlockNames);
 
 const toLines = (value: string) =>
   value
@@ -95,7 +96,8 @@ export function buildVisualPagePayload(draft: Record<string, unknown>) {
 }
 
 export function hasRenderableVisualPage(record: Partial<VisualPageRecord> | null | undefined) {
-  return Boolean(record?.content && cleanPuckData(record.content).content.length > 0);
+  const data = record?.content ? cleanPuckData(record.content) : null;
+  return Boolean(data?.content.length && data.content.every((item) => visualPageBlockSet.has(item.type)));
 }
 
 function listFromSlugs<T extends { slug: string }>(slugs: string[], items: T[]) {

@@ -102,16 +102,67 @@ export const defaultPageData: CmsPageData = {
     type: "page",
     props: {
       slug: "home",
-      title: "Home",
-      sectionCount: defaultSections.length
+      title: "Home"
     }
   },
-  content: defaultSections.map((section) => ({
-    type: "homepageSection",
-    props: {
-      section_type: section.section_type,
-      title: section.title,
-      description: section.description ?? ""
+  content: [
+    {
+      type: "Hero",
+      props: {
+        eyebrow: "Machines",
+        title: "Choose your line.",
+        description: "Competition chassis and commercial fleets engineered around the way you race and operate.",
+        ctaLabel: "Build your track",
+        ctaHref: "/contact",
+        imageUrl: "/media/hero.jpg",
+        imageAlt: "VORTKART racing start"
+      }
+    },
+    {
+      type: "RichText",
+      props: {
+        title: "Why VORTKART",
+        body: "Every lap starts with a stronger system.\n\nA practical partner for drivers, operators and track builders."
+      }
+    },
+    {
+      type: "ProductShowcase",
+      props: {
+        title: "Products",
+        intro: "Featured machines from the current lineup.",
+        productSlugs: "kz-racing-chassis, ok-racing-chassis, phantom-electric-kart, fs200-rental-kart"
+      }
+    },
+    {
+      type: "CaseStudyShowcase",
+      props: {
+        title: "Racing Stories",
+        intro: "Proof from the track and support from the circuit.",
+        projectSlugs: "built-around-race-day, partners-at-the-track"
+      }
+    },
+    {
+      type: "RichText",
+      props: {
+        title: "Culture",
+        body: "Karting culture, community and the shared language of speed."
+      }
+    },
+    {
+      type: "RichText",
+      props: {
+        title: "Technology",
+        body: "Speed, made repeatable.\n\nTrack systems, fleet reliability and performance tooling."
+      }
+    },
+    {
+      type: "CTA",
+      props: {
+        title: "Build Your Track.",
+        description: "Tell us what you want to create. We will help shape the fleet, systems and support around it.",
+        ctaLabel: "Contact us",
+        ctaHref: "/contact"
+      }
     }
-  }))
+  ]
 };

@@ -190,20 +190,23 @@ on conflict (id) do nothing;
 
 update public.pages
 set content = '{
-  "root":{"type":"page","props":{"slug":"home","title":"Home","sectionCount":7}},
+  "root":{"type":"page","props":{"slug":"home","title":"Home"}},
   "content":[
-    {"type":"homepageSection","props":{"section_type":"hero","title":"Hero","description":"Primary landing section with the main value proposition."}},
-    {"type":"homepageSection","props":{"section_type":"why","title":"Why VORTKART","description":"Reasons to trust the brand and the products."}},
-    {"type":"homepageSection","props":{"section_type":"products","title":"Products","description":"Featured product grid for the homepage."}},
-    {"type":"homepageSection","props":{"section_type":"racing_stories","title":"Racing Stories","description":"Proof from the track and customer stories."}},
-    {"type":"homepageSection","props":{"section_type":"culture","title":"Culture","description":"Brand and community section."}},
-    {"type":"homepageSection","props":{"section_type":"technology","title":"Technology","description":"Technical differentiators and systems."}},
-    {"type":"homepageSection","props":{"section_type":"contact","title":"Contact","description":"Inquiry and next-step call to action."}}
+    {"type":"Hero","props":{"eyebrow":"Machines","title":"Choose your line.","description":"Competition chassis and commercial fleets engineered around the way you race and operate.","ctaLabel":"Build your track","ctaHref":"/contact","imageUrl":"/media/hero.jpg","imageAlt":"VORTKART racing start"}},
+    {"type":"RichText","props":{"title":"Why VORTKART","body":"Every lap starts with a stronger system.\n\nA practical partner for drivers, operators and track builders."}},
+    {"type":"ProductShowcase","props":{"title":"Products","intro":"Featured machines from the current lineup.","productSlugs":"kz-racing-chassis, ok-racing-chassis, phantom-electric-kart, fs200-rental-kart"}},
+    {"type":"CaseStudyShowcase","props":{"title":"Racing Stories","intro":"Proof from the track and support from the circuit.","projectSlugs":"built-around-race-day, partners-at-the-track"}},
+    {"type":"RichText","props":{"title":"Culture","body":"Karting culture, community and the shared language of speed."}},
+    {"type":"RichText","props":{"title":"Technology","body":"Speed, made repeatable.\n\nTrack systems, fleet reliability and performance tooling."}},
+    {"type":"CTA","props":{"title":"Build Your Track.","description":"Tell us what you want to create. We will help shape the fleet, systems and support around it.","ctaLabel":"Contact us","ctaHref":"/contact"}}
   ]
 }'::jsonb,
 updated_at = now()
 where slug = 'home'
-  and content = '{"root":{"type":"page","props":{"slug":"home","title":"Home"}},"content":[]}'::jsonb;
+  and (
+    content = '{"root":{"type":"page","props":{"slug":"home","title":"Home"}},"content":[]}'::jsonb
+    or content = '{"root":{"type":"page","props":{"slug":"home","title":"Home","sectionCount":7}},"content":[{"type":"homepageSection","props":{"section_type":"hero","title":"Hero","description":"Primary landing section with the main value proposition."}},{"type":"homepageSection","props":{"section_type":"why","title":"Why VORTKART","description":"Reasons to trust the brand and the products."}},{"type":"homepageSection","props":{"section_type":"products","title":"Products","description":"Featured product grid for the homepage."}},{"type":"homepageSection","props":{"section_type":"racing_stories","title":"Racing Stories","description":"Proof from the track and customer stories."}},{"type":"homepageSection","props":{"section_type":"culture","title":"Culture","description":"Brand and community section."}},{"type":"homepageSection","props":{"section_type":"technology","title":"Technology","description":"Technical differentiators and systems."}},{"type":"homepageSection","props":{"section_type":"contact","title":"Contact","description":"Inquiry and next-step call to action."}}]}'::jsonb
+  );
 
 with home_page as (
   select id from public.pages where slug = 'home' limit 1
