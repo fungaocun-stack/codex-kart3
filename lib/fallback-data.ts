@@ -1,4 +1,5 @@
-import type { Product, Project, SiteSettings } from "./types";
+import { defaultPageData } from "./cms";
+import type { NavigationLink, Product, Project, SiteNavigation, SiteSettings, VisualPageRecord } from "./types";
 
 const img = (name: string) => `/media/${name}`;
 
@@ -21,8 +22,42 @@ export const defaultSettings: SiteSettings = {
   phone: "+86 000 0000 0000", email: "racing@vortkart.com",
   social_links: { instagram: "#", youtube: "#", linkedin: "#" },
   seo_title: "VORTKART | Born For Racing",
-  seo_description: "Racing karts, rental fleets, electric karts and complete track solutions engineered for champions."
+  seo_description: "Racing karts, rental fleets, electric karts and complete track solutions engineered for champions.",
+  site_name: "VORTKART",
+  tagline: "Born For Racing",
+  header_cta_label: "Build your track",
+  header_cta_url: "/contact",
+  footer_note: `© ${new Date().getFullYear()} VORTKART`,
+  theme: { primary: "#ff5a00", secondary: "#ffffff", background: "#070707" }
 };
+
+const navigation: SiteNavigation = {
+  header: [
+    { label: "Products", href: "/products" },
+    { label: "Racing Stories", href: "/projects" },
+    { label: "Visual Pages", href: "/pages/home" },
+    { label: "Contact", href: "/contact" }
+  ],
+  footer: [
+    { label: "Products", href: "/products" },
+    { label: "Racing Stories", href: "/projects" },
+    { label: "Build Your Track", href: "/contact" }
+  ]
+};
+
+const pages: VisualPageRecord[] = [
+  {
+    id: "home",
+    slug: "home",
+    title: "Home",
+    seo_title: "VORTKART | Born For Racing",
+    seo_description: "Racing karts, rental fleets, electric karts and complete track solutions engineered for champions.",
+    published: true,
+    content: defaultPageData
+  }
+];
 
 export const getFallbackProducts = () => products;
 export const getFallbackProjects = () => projects;
+export const getFallbackNavigation = () => navigation;
+export const getFallbackPages = () => pages;

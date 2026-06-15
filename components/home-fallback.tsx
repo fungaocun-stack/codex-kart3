@@ -1,0 +1,166 @@
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, BatteryCharging, Flag, Gauge, Globe2, ShieldCheck, Timer, Wrench } from "lucide-react";
+import { Reveal } from "@/components/motion";
+import { InquiryForm } from "@/components/inquiry-form";
+import { JsonLd } from "@/components/json-ld";
+import type { Product, Project, SiteSettings } from "@/lib/types";
+
+type Props = {
+  products: Product[];
+  projects: Project[];
+  settings: SiteSettings;
+};
+
+export function HomeFallback({ products, projects, settings }: Props) {
+  const features = [
+    [Gauge, "Performance", "Race-derived handling and precise driver feedback."],
+    [Wrench, "Technology", "Purpose-built chassis, powertrains and timing systems."],
+    [ShieldCheck, "Safety", "Engineered protection for drivers and track operators."],
+    [Globe2, "Global Support", "A practical partner from concept to race day."]
+  ] as const;
+
+  return (
+    <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "VideoObject",
+          name: "VORTKART Born For Racing",
+          description: "VORTKART racing culture and track solutions.",
+          thumbnailUrl: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/media/hero.jpg`,
+          uploadDate: "2026-01-01",
+          contentUrl: settings.hero_video_url || undefined
+        }}
+      />
+      <section className="relative min-h-screen overflow-hidden">
+        {settings.hero_video_url ? (
+          <video autoPlay muted loop playsInline className="absolute inset-0 h-full w-full object-cover">
+            <source src={settings.hero_video_url} />
+          </video>
+        ) : (
+          <Image src="/media/hero.jpg" alt="VORTKART racing start" fill priority className="animate-[pulse_10s_ease-in-out_infinite] object-cover" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-black/30" />
+        <div className="relative mx-auto flex min-h-screen max-w-[1500px] flex-col justify-end px-5 pb-16 pt-28 lg:px-10">
+          <p className="eyebrow mb-5">Karting culture. Complete solutions.</p>
+          <h1 className="display max-w-6xl">
+            Born For
+            <br />
+            <span className="text-race">Racing.</span>
+          </h1>
+          <div className="mt-8 flex flex-wrap items-center gap-6">
+            <p className="max-w-xl text-lg text-white/70">Engineered for champions. Built for operators. Supported everywhere the race takes us.</p>
+            <Link className="flex items-center gap-2 bg-race px-6 py-4 text-sm font-black uppercase text-black" href="/products">
+              Explore machines <ArrowRight size={18} />
+            </Link>
+          </div>
+        </div>
+      </section>
+      <section className="section track-grid">
+        <div className="section-inner">
+          <Reveal>
+            <p className="eyebrow">Why VORTKART</p>
+            <h2 className="mt-4 max-w-4xl text-4xl font-black uppercase md:text-7xl">Every lap starts with a stronger system.</h2>
+          </Reveal>
+          <div className="mt-14 grid gap-px bg-white/10 md:grid-cols-4">
+            {features.map(([Icon, title, text]) => (
+              <Reveal key={title} className="bg-ink p-7">
+                <Icon className="text-race" />
+                <h3 className="mt-12 text-xl font-black uppercase">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-white/55">{text}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section bg-white text-black">
+        <div className="section-inner">
+          <p className="eyebrow">Kart ecosystem</p>
+          <div className="mt-4 flex items-end justify-between gap-5">
+            <h2 className="max-w-4xl text-4xl font-black uppercase md:text-7xl">One partner. The whole circuit.</h2>
+            <Link href="/products" className="hidden font-bold uppercase md:block">
+              View all →
+            </Link>
+          </div>
+          <div className="mt-10 grid gap-px bg-black/15 sm:grid-cols-2 lg:grid-cols-5">
+            {[
+              [Gauge, "Rental Karts"],
+              [Flag, "Racing Karts"],
+              [BatteryCharging, "Electric Karts"],
+              [Wrench, "Track System"],
+              [Timer, "Timing System"]
+            ].map(([Icon, label]) => (
+              <div key={label as string} className="group bg-white p-5 transition hover:bg-black hover:text-white">
+                <Icon className="text-race" />
+                <h3 className="mt-10 font-black uppercase">{label as string}</h3>
+              </div>
+            ))}
+          </div>
+          <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {products.filter((product) => product.featured).slice(0, 4).map((product) => (
+              <Link href={`/products/${product.slug}`} key={product.id} className="group">
+                <div className="relative aspect-square overflow-hidden bg-zinc-100">
+                  <Image src={product.images[0]} alt={product.name} fill className="object-cover transition duration-700 group-hover:scale-105" />
+                </div>
+                <p className="mt-4 text-xs font-black uppercase text-race">{product.category}</p>
+                <h3 className="mt-1 text-xl font-black uppercase">{product.name}</h3>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section" id="culture">
+        <div className="section-inner">
+          <p className="eyebrow">Racing stories</p>
+          <h2 className="mt-4 text-4xl font-black uppercase md:text-7xl">The track is our proof.</h2>
+          <div className="mt-14 grid gap-8 lg:grid-cols-2">
+            {projects.map((project) => (
+              <Link href={`/projects/${project.slug}`} key={project.id} className="group">
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <Image src={project.gallery[0]} alt={project.title} fill className="object-cover transition duration-700 group-hover:scale-105" />
+                </div>
+                <p className="mt-5 text-xs font-bold uppercase text-race">
+                  {project.location} · {project.year}
+                </p>
+                <h3 className="mt-2 text-3xl font-black uppercase">{project.title}</h3>
+                <p className="mt-3 max-w-xl text-white/55">{project.story}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section bg-zinc-950" id="technology">
+        <div className="section-inner">
+          <p className="eyebrow">Technology</p>
+          <h2 className="mt-4 text-4xl font-black uppercase md:text-7xl">Speed, made repeatable.</h2>
+          <div className="mt-14 grid gap-5 md:grid-cols-3">
+            {[
+              [Flag, "Chassis Intelligence", "Materials, geometry and tuning windows built around driver confidence."],
+              [BatteryCharging, "Powertrain Control", "Responsive performance with practical fleet management."],
+              [Timer, "Track & Timing", "A connected race-day experience from start lights to results."]
+            ].map(([Icon, title, description]) => (
+              <div key={title as string} className="min-h-80 border border-white/10 bg-black p-8">
+                <Icon className="text-race" size={36} />
+                <h3 className="mt-32 text-2xl font-black uppercase">{title as string}</h3>
+                <p className="mt-3 text-white/55">{description as string}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section bg-race text-black">
+        <div className="section-inner grid gap-12 lg:grid-cols-2">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[.18em]">Start a project</p>
+            <h2 className="mt-4 text-5xl font-black uppercase md:text-8xl">Build Your Track.</h2>
+            <p className="mt-6 max-w-xl text-black/65">Tell us what you want to create. We will help shape the fleet, systems and support around it.</p>
+          </div>
+          <div className="[&_input]:border-black/25 [&_input]:bg-black [&_textarea]:border-black/25 [&_textarea]:bg-black">
+            <InquiryForm />
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}

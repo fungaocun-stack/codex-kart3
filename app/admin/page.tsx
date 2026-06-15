@@ -1,3 +1,5 @@
-import { AdminApp } from "@/components/admin-app";
-export const metadata = { title: "Admin" };
-export default function Admin(){return <AdminApp/>}
+import { redirect } from "next/navigation";
+
+export default function AdminIndex() {
+  redirect("/admin/products");
+}
