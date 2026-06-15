@@ -212,3 +212,30 @@ export function createAdminDraft(resource: AdminResource, source: AdminDraft = {
 export function buildAdminPagePayload(draft: Record<string, unknown>) {
   return buildVisualPagePayload(draft);
 }
+
+export function getAdminRevalidationPaths(resource: AdminResource, draft: AdminDraft = {}) {
+  const paths = new Set<string>();
+  const add = (...values: Array<string | undefined>) => {
+    for (const value of values) {
+      if (value) paths.add(value);
+    }
+  };
+  const slug = typeof draft.slug === "string" && draft.slug.trim().length > 0 ? draft.slug.trim() : "";
+
+  if (resource === "products") {
+    add("/", "/products", "/sitemap.xml");
+    if (slug) add(`/products/${slug}`);
+  } else if (resource === "projects") {
+    add("/", "/projects", "/sitemap.xml");
+    if (slug) add(`/projects/${slug}`);
+  } else if (resource === "site_settings") {
+    add("/", "/contact", "/sitemap.xml");
+  } else if (resource === "page_sections") {
+    add("/", "/pages/home", "/sitemap.xml");
+  } else if (resource === "pages") {
+    add("/", "/pages", "/pages/home", "/admin/pages", "/sitemap.xml");
+    if (slug) add(`/pages/${slug}`);
+  }
+
+  return [...paths];
+}

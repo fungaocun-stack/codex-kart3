@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { VisualPageRender } from "@/components/visual-page-render";
 import { getPage, getProducts, getProjects } from "@/lib/data";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type Props = {
   params: Promise<{ slug: string }>;
 };

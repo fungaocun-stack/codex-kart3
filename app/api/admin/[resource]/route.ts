@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import { isSupabaseConfigured, serviceSupabase } from "@/lib/supabase";
 import { buildAdminPayload } from "@/lib/admin-forms";
+import { getAdminRevalidationPaths } from "@/lib/admin-cms";
 
 const allowed = new Set(["products", "projects", "site_settings", "inquiries", "page_sections", "pages"]);
 
@@ -20,6 +22,12 @@ async function homePageId() {
   const { data, error } = await serviceSupabase().from("pages").select("id").eq("slug", "home").maybeSingle();
   if (error || !data) return null;
   return data.id as string;
+}
+
+function revalidateAdminPaths(resource: "products" | "projects" | "site_settings" | "inquiries" | "page_sections" | "pages", draft?: Record<string, unknown>) {
+  for (const path of getAdminRevalidationPaths(resource, draft)) {
+    revalidatePath(path);
+  }
 }
 
 export async function GET(request: Request, { params }: { params: Promise<{ resource: string }> }) {
@@ -55,12 +63,19 @@ export async function POST(request: Request, { params }: { params: Promise<{ res
     (payload as Record<string, unknown>).content = (payload as Record<string, unknown>).content ?? { root: { type: "page", props: {} }, content: [] };
   }
   const { data, error } = await serviceSupabase().from(resource).upsert(payload).select().single();
+  if (!error) revalidateAdminPaths(resource as "products" | "projects" | "site_settings" | "inquiries" | "page_sections" | "pages", payload as Record<string, unknown>);
   return NextResponse.json(error ? { error: error.message } : data, { status: error ? 500 : 200 });
 }
 export async function DELETE(request: Request, { params }: { params: Promise<{ resource: string }> }) {
   const { resource } = await params;
   if (!["products", "projects", "page_sections", "pages"].includes(resource) || !(await admin(request))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const id = new URL(request.url).searchParams.get("id");
+  let slug: string | undefined;
+  if (id && ["products", "projects", "pages"].includes(resource)) {
+    const { data } = await serviceSupabase().from(resource).select("slug").eq("id", id).maybeSingle();
+    if (data && typeof data.slug === "string") slug = data.slug;
+  }
   const { error } = await serviceSupabase().from(resource).delete().eq("id", id);
+  if (!error) revalidateAdminPaths(resource as "products" | "projects" | "site_settings" | "inquiries" | "page_sections" | "pages", slug ? { slug } : undefined);
   return NextResponse.json(error ? { error: error.message } : { ok: true }, { status: error ? 500 : 200 });
 }

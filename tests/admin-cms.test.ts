@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { adminNavItems, createAdminDraft, resolveAdminResource } from "@/lib/admin-cms";
+import { adminNavItems, createAdminDraft, getAdminRevalidationPaths, resolveAdminResource } from "@/lib/admin-cms";
 
 describe("admin foundation contracts", () => {
   it("maps route slugs back to CMS resources", () => {
@@ -55,5 +55,23 @@ describe("admin foundation contracts", () => {
         items: []
       }
     });
+  });
+
+  it("revalidates the affected public routes after admin saves", () => {
+    expect(getAdminRevalidationPaths("products", { slug: "kz-racing-chassis" })).toEqual([
+      "/",
+      "/products",
+      "/sitemap.xml",
+      "/products/kz-racing-chassis"
+    ]);
+    expect(getAdminRevalidationPaths("site_settings")).toEqual(["/", "/contact", "/sitemap.xml"]);
+    expect(getAdminRevalidationPaths("pages", { slug: "launch" })).toEqual([
+      "/",
+      "/pages",
+      "/pages/home",
+      "/admin/pages",
+      "/sitemap.xml",
+      "/pages/launch"
+    ]);
   });
 });

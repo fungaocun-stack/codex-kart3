@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@measured/puck/puck.css";
 import "./globals.css";
 import { Header } from "@/components/header";
@@ -8,6 +8,9 @@ import { JsonLd } from "@/components/json-ld";
 import { getNavigation, getSettings } from "@/lib/data";
 import { themeStyle } from "@/lib/cms";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -15,7 +18,6 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: settings.seo_title || "VORTKART | Born For Racing", template: "%s | VORTKART" },
     description: settings.seo_description || "Karting culture, performance machines and complete track solutions.",
     metadataBase: new URL(baseUrl),
-    themeColor: settings.theme?.background || "#070707",
     icons: settings.favicon_url ? { icon: settings.favicon_url, shortcut: settings.favicon_url, apple: settings.favicon_url } : undefined,
     openGraph: {
       title: settings.seo_title || "VORTKART | Born For Racing",
@@ -23,6 +25,13 @@ export async function generateMetadata(): Promise<Metadata> {
       url: baseUrl,
       siteName: settings.site_name || "VORTKART"
     }
+  };
+}
+
+export async function generateViewport(): Promise<Viewport> {
+  const settings = await getSettings();
+  return {
+    themeColor: settings.theme?.background || "#070707"
   };
 }
 
