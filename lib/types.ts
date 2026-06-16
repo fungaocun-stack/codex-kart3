@@ -11,7 +11,7 @@ export type Project = {
   published?: boolean;
 };
 export type SiteSettings = {
-  logo_url?: string; phone?: string; email?: string; social_links?: Record<string, string>;
+  logo_url?: string; logo_mode?: "text" | "image"; logo_text?: string; logo_text_color?: string; phone?: string; email?: string; social_links?: Record<string, string>;
   seo_title?: string; seo_description?: string; hero_video_url?: string;
   site_name?: string; tagline?: string; contact_phone?: string; contact_email?: string; address?: string;
   logo_alt?: string; favicon_url?: string; og_image_url?: string; header_cta_label?: string; header_cta_url?: string;

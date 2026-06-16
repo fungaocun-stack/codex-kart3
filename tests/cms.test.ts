@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { defaultPageData, defaultSections, normalizeTheme, themeStyle } from "@/lib/cms";
+import { defaultPageData, defaultSections, normalizeTheme, resolveLogoDisplay, themeStyle } from "@/lib/cms";
 
 describe("visual CMS contracts", () => {
   it("normalizes invalid theme colors to safe defaults", () => {
@@ -18,6 +18,34 @@ describe("visual CMS contracts", () => {
       "--color-primary-rgb": "17 34 51",
       "--color-secondary-rgb": "171 205 239",
       "--color-background-rgb": "1 2 3"
+    });
+  });
+
+  it("resolves text and image logo modes without the hardcoded brand prefix", () => {
+    expect(
+      resolveLogoDisplay({
+        logo_mode: "text",
+        logo_text: "VORTKART",
+        logo_text_color: "#ff5a00",
+        site_name: "VORTKART"
+      })
+    ).toEqual({
+      mode: "text",
+      text: "VORTKART",
+      color: "#ff5a00"
+    });
+
+    expect(
+      resolveLogoDisplay({
+        logo_mode: "image",
+        logo_url: "/media/logo.png",
+        logo_alt: "VORTKART logo",
+        site_name: "VORTKART"
+      })
+    ).toEqual({
+      mode: "image",
+      src: "/media/logo.png",
+      alt: "VORTKART logo"
     });
   });
 

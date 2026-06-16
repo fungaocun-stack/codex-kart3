@@ -24,6 +24,9 @@ export const defaultSettings: SiteSettings = {
   seo_title: "VORTKART | Born For Racing",
   seo_description: "Racing karts, rental fleets, electric karts and complete track solutions engineered for champions.",
   site_name: "VORTKART",
+  logo_mode: "text",
+  logo_text: "VORTKART",
+  logo_text_color: "#ffffff",
   tagline: "Born For Racing",
   header_cta_label: "Build your track",
   header_cta_url: "/contact",
@@ -64,3 +67,4 @@ export const getFallbackProducts = () => products;
 export const getFallbackProjects = () => projects;
 export const getFallbackNavigation = () => navigation;
 export const getFallbackPages = () => pages;
+

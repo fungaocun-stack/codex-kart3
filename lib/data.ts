@@ -8,7 +8,10 @@ function mergeSettings(data: SiteSettings | null | undefined): SiteSettings {
     typeof value === "string" && value.trim().length > 0 ? value : fallback;
   if (!data) return defaultSettings;
   return {
+    logo_mode: data.logo_mode === "image" ? "image" : "text",
     logo_url: textOrDefault(data.logo_url, defaultSettings.logo_url),
+    logo_text: textOrDefault(data.logo_text, defaultSettings.logo_text),
+    logo_text_color: textOrDefault(data.logo_text_color, defaultSettings.logo_text_color),
     phone: textOrDefault(data.phone, defaultSettings.phone),
     email: textOrDefault(data.email, defaultSettings.email),
     social_links: {
@@ -91,3 +94,4 @@ export async function getPage(slug: string): Promise<VisualPageRecord | undefine
   }
   return page;
 }
+

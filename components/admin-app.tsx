@@ -367,9 +367,17 @@ function Editor({
           <TextField label="Tagline" value={String(draft.tagline ?? "")} onChange={(next) => setValue("tagline", next)} />
         </div>
         <div className="grid gap-4 md:grid-cols-2">
-          <MediaField label="Logo URL" value={String(draft.logo_url ?? "")} onChange={(next) => setValue("logo_url", next)} onUpload={onUpload} />
-          <TextField label="Logo alt text" value={String(draft.logo_alt ?? "")} onChange={(next) => setValue("logo_alt", next)} />
+          <SelectField label="Logo mode" value={String(draft.logo_mode ?? "text")} options={[{ label: "Text", value: "text" }, { label: "Image", value: "image" }]} onChange={(next) => setValue("logo_mode", next)} />
+          <TextField label="Logo text" value={String(draft.logo_text ?? draft.site_name ?? "") } onChange={(next) => setValue("logo_text", next)} hint="Shown when Logo mode is Text." />
         </div>
+        {String(draft.logo_mode ?? "text") === "image" ? (
+          <div className="grid gap-4 md:grid-cols-2">
+            <MediaField label="Logo URL" value={String(draft.logo_url ?? "")} onChange={(next) => setValue("logo_url", next)} onUpload={onUpload} />
+            <TextField label="Logo alt text" value={String(draft.logo_alt ?? "")} onChange={(next) => setValue("logo_alt", next)} />
+          </div>
+        ) : (
+          <TextField label="Logo text color" value={String(draft.logo_text_color ?? "#ffffff")} onChange={(next) => setValue("logo_text_color", next)} hint="Use a hex color like #ffffff." />
+        )}
         <div className="grid gap-4 md:grid-cols-2">
           <TextField label="Phone" value={String(draft.phone ?? "")} onChange={(next) => setValue("phone", next)} />
           <TextField label="Email" value={String(draft.email ?? "")} onChange={(next) => setValue("email", next)} />
@@ -510,3 +518,6 @@ function Editor({
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
+
+
+

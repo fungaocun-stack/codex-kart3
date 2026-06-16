@@ -1,7 +1,14 @@
+import type { SiteSettings } from "./types";
+
 const safeTheme = {
   primary: "#ff5a00",
   secondary: "#ffffff",
   background: "#070707"
+} as const;
+
+const safeLogo = {
+  text: "VORTKART",
+  color: "#ffffff"
 } as const;
 
 export type CmsTheme = {
@@ -28,10 +35,26 @@ export type CmsPageData = {
   }>;
 };
 
+export type LogoDisplay =
+  | {
+      mode: "text";
+      text: string;
+      color: string;
+    }
+  | {
+      mode: "image";
+      src: string;
+      alt: string;
+    };
+
 const colorPattern = /^#[0-9a-fA-F]{6}$/;
 
 function fallbackColor(value: string | undefined, fallback: string) {
   return typeof value === "string" && colorPattern.test(value) ? value : fallback;
+}
+
+function fallbackText(value: string | undefined, fallback: string) {
+  return typeof value === "string" && value.trim().length > 0 ? value.trim() : fallback;
 }
 
 function hexToRgbChannels(value: string) {
@@ -56,6 +79,23 @@ export function themeStyle(theme: CmsTheme | null | undefined) {
     "--color-primary-rgb": hexToRgbChannels(normalized.primary),
     "--color-secondary-rgb": hexToRgbChannels(normalized.secondary),
     "--color-background-rgb": hexToRgbChannels(normalized.background)
+  };
+}
+
+export function resolveLogoDisplay(settings: Pick<SiteSettings, "logo_mode" | "logo_url" | "logo_text" | "logo_text_color" | "site_name" | "logo_alt">): LogoDisplay {
+  const text = fallbackText(settings.logo_text, fallbackText(settings.site_name, safeLogo.text));
+  const color = fallbackColor(settings.logo_text_color, safeLogo.color);
+  if (settings.logo_mode === "image" && typeof settings.logo_url === "string" && settings.logo_url.trim().length > 0) {
+    return {
+      mode: "image",
+      src: settings.logo_url.trim(),
+      alt: fallbackText(settings.logo_alt, `${text} logo`)
+    };
+  }
+  return {
+    mode: "text",
+    text,
+    color
   };
 }
 

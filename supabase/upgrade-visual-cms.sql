@@ -28,6 +28,9 @@ alter table public.products
   add column if not exists updated_at timestamptz not null default now();
 
 alter table public.site_settings
+  add column if not exists logo_mode text not null default 'text' check (logo_mode in ('text','image')),
+  add column if not exists logo_text text,
+  add column if not exists logo_text_color text,
   add column if not exists site_name text,
   add column if not exists tagline text,
   add column if not exists contact_phone text,
@@ -45,6 +48,9 @@ alter table public.site_settings
 update public.site_settings
 set
   logo_url = case when coalesce(logo_url, '') = '' then '/media/vortkart-logo.svg' else logo_url end,
+  logo_mode = case when coalesce(logo_mode, '') = 'image' then 'image' else 'text' end,
+  logo_text = case when coalesce(logo_text, '') = '' then 'VORTKART' else logo_text end,
+  logo_text_color = case when coalesce(logo_text_color, '') = '' then '#ffffff' else logo_text_color end,
   phone = case when coalesce(phone, '') = '' then '+86 000 0000 0000' else phone end,
   email = case when coalesce(email, '') = '' then 'racing@vortkart.com' else email end,
   social_links = coalesce(social_links, '{}'::jsonb) || '{"instagram":"#","youtube":"#","linkedin":"#"}'::jsonb,
@@ -69,6 +75,9 @@ where id = 1;
 insert into public.site_settings (
   id,
   logo_url,
+  logo_mode,
+  logo_text,
+  logo_text_color,
   phone,
   email,
   social_links,
@@ -91,6 +100,9 @@ insert into public.site_settings (
 values (
   1,
   '/media/vortkart-logo.svg',
+  'text',
+  'VORTKART',
+  '#ffffff',
   '+86 000 0000 0000',
   'racing@vortkart.com',
   '{"instagram":"#","youtube":"#","linkedin":"#"}'::jsonb,

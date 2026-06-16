@@ -32,6 +32,9 @@ describe("admin foundation contracts", () => {
 
     expect(createAdminDraft("site_settings")).toMatchObject({
       id: 1,
+      logo_mode: "text",
+      logo_text: "VORTKART",
+      logo_text_color: "#ffffff",
       site_name: "",
       theme: {
         primary: "#ff5a00",

@@ -28,7 +28,7 @@ create table if not exists public.projects (
   created_at timestamptz not null default now(), updated_at timestamptz not null default now()
 );
 create table if not exists public.site_settings (
-  id integer primary key default 1 check (id = 1), logo_url text, phone text, email text,
+  id integer primary key default 1 check (id = 1), logo_url text, logo_mode text not null default 'text' check (logo_mode in ('text','image')), logo_text text, logo_text_color text, phone text, email text,
   social_links jsonb not null default '{}', seo_title text, seo_description text, hero_video_url text,
   updated_at timestamptz not null default now()
 );
@@ -39,9 +39,9 @@ create table if not exists public.inquiries (
   notes text not null default '', created_at timestamptz not null default now(), updated_at timestamptz not null default now()
 );
 insert into public.site_settings (
-  id, logo_url, phone, email, social_links, seo_title, seo_description, hero_video_url, site_name, tagline, contact_phone, contact_email, address, logo_alt, favicon_url, og_image_url, header_cta_label, header_cta_url, footer_note, theme
+  id, logo_url, logo_mode, logo_text, logo_text_color, phone, email, social_links, seo_title, seo_description, hero_video_url, site_name, tagline, contact_phone, contact_email, address, logo_alt, favicon_url, og_image_url, header_cta_label, header_cta_url, footer_note, theme
 ) values (
-  1, '/media/vortkart-logo.svg', '+86 000 0000 0000', 'racing@vortkart.com', '{"instagram":"#","youtube":"#","linkedin":"#"}'::jsonb,
+  1, '/media/vortkart-logo.svg', 'text', 'VORTKART', '#ffffff', '+86 000 0000 0000', 'racing@vortkart.com', '{"instagram":"#","youtube":"#","linkedin":"#"}'::jsonb,
   'VORTKART | Born For Racing', 'Racing karts, rental fleets, electric karts and complete track solutions engineered for champions.', '', 'VORTKART', 'Born For Racing',
   '+86 000 0000 0000', 'racing@vortkart.com', 'Karting, manufacturing and track solutions', 'VORTKART logo', '', '', 'Build your track', '/contact', '© VORTKART',
   '{"primary":"#ff5a00","secondary":"#ffffff","background":"#070707"}'::jsonb

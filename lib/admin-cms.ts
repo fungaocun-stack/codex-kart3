@@ -145,9 +145,12 @@ export function createAdminDraft(resource: AdminResource, source: AdminDraft = {
   if (resource === "site_settings") {
     return {
       id: 1,
+      logo_mode: source.logo_mode === "image" ? "image" : "text",
       site_name: stringValue(source.site_name),
       tagline: stringValue(source.tagline),
       logo_url: stringValue(source.logo_url),
+      logo_text: stringValue(source.logo_text, "VORTKART"),
+      logo_text_color: stringValue(source.logo_text_color, "#ffffff"),
       logo_alt: stringValue(source.logo_alt),
       phone: stringValue(source.phone),
       email: stringValue(source.email),
@@ -239,3 +242,8 @@ export function getAdminRevalidationPaths(resource: AdminResource, draft: AdminD
 
   return [...paths];
 }
+
+
+
+
+
