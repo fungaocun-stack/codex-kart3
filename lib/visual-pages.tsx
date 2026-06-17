@@ -46,6 +46,12 @@ const toLines = (value: string) =>
     .map((entry) => entry.trim())
     .filter(Boolean);
 
+const toParagraphs = (value: string) =>
+  value
+    .split(/\r?\n\s*\r?\n/)
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+
 const escape = (value: unknown) => String(value ?? "");
 
 function cleanPuckData(value: unknown): PuckData {
@@ -132,9 +138,10 @@ export function buildVisualPageConfig(catalog: VisualPageCatalog = {}): PuckConf
           imageAlt: { type: "text" }
         },
         render: ({ eyebrow, title, description, ctaLabel, ctaHref, imageUrl, imageAlt }) => (
-          <section className="relative overflow-hidden bg-black text-white">
-            {imageUrl ? <img src={escape(imageUrl)} alt={escape(imageAlt)} className="absolute inset-0 h-full w-full object-cover opacity-35" /> : null}
-            <div className="relative mx-auto flex min-h-[78vh] max-w-[1500px] flex-col justify-end px-5 pb-16 pt-28 lg:px-10">
+          <section className="relative min-h-screen overflow-hidden bg-black text-white">
+            {imageUrl ? <img src={escape(imageUrl)} alt={escape(imageAlt)} className="absolute inset-0 h-full w-full object-cover opacity-45" /> : null}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-black/20" />
+            <div className="relative mx-auto flex min-h-screen max-w-[1500px] flex-col justify-end px-5 pb-16 pt-28 lg:px-10">
               <p className="eyebrow mb-5">{escape(eyebrow)}</p>
               <h1 className="display max-w-6xl">{escape(title)}</h1>
               <div className="mt-8 flex flex-wrap items-center gap-6">
@@ -154,7 +161,24 @@ export function buildVisualPageConfig(catalog: VisualPageCatalog = {}): PuckConf
           title: { type: "text" },
           body: { type: "textarea" }
         },
-        render: ({ title, body }) => sectionShell(escape(title), <div className="max-w-4xl whitespace-pre-wrap text-lg leading-8 text-white/75">{escape(body)}</div>)
+        render: ({ title, body }) => {
+          const paragraphs = toParagraphs(escape(body));
+          return sectionShell(
+            escape(title),
+            paragraphs.length > 1 ? (
+              <div className="max-w-5xl">
+                <h2 className="text-4xl font-black uppercase md:text-7xl">{paragraphs[0]}</h2>
+                {paragraphs.slice(1).map((paragraph) => (
+                  <p key={paragraph} className="mt-8 max-w-3xl text-lg leading-8 text-white/70">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            ) : (
+              <div className="max-w-4xl whitespace-pre-wrap text-lg leading-8 text-white/75">{escape(body)}</div>
+            )
+          );
+        }
       },
       MediaGallery: {
         fields: {
@@ -177,24 +201,54 @@ export function buildVisualPageConfig(catalog: VisualPageCatalog = {}): PuckConf
           intro: { type: "textarea" },
           productSlugs: { type: "textarea" }
         },
-        render: ({ title, intro, productSlugs }) =>
-          sectionShell(
-            escape(title),
-            <>
-              <p className="max-w-3xl text-white/55">{escape(intro)}</p>
-              <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-                {listFromSlugs(toLines(escape(productSlugs)), products).map((product) => (
-                  <article key={product.slug} className="group">
-                    <div className="relative aspect-square overflow-hidden bg-zinc-100">
-                      <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+        render: ({ title, intro, productSlugs }) => {
+          const productCards = listFromSlugs(toLines(escape(productSlugs)), products);
+          return (
+            <section className="section bg-white text-black">
+              <div className="section-inner">
+                <p className="eyebrow">{escape(title)}</p>
+                <div className="mt-4 flex items-end justify-between gap-5">
+                  <h2 className="max-w-4xl text-4xl font-black uppercase md:text-7xl">{escape(title)}</h2>
+                </div>
+                <p className="mt-6 max-w-3xl text-black/60">{escape(intro)}</p>
+                <div className="mt-10 grid gap-px bg-black/15 sm:grid-cols-2 lg:grid-cols-5">
+                  {[
+                    "Rental Karts",
+                    "Racing Karts",
+                    "Electric Karts",
+                    "Track System",
+                    "Timing System"
+                  ].map((label) => (
+                    <div key={label} className="bg-white p-5 transition hover:bg-black hover:text-white">
+                      <p className="text-xs font-black uppercase tracking-[.18em] text-race">Category</p>
+                      <h3 className="mt-10 font-black uppercase">{label}</h3>
                     </div>
-                    <p className="mt-4 text-xs font-black uppercase text-race">{product.category}</p>
-                    <h3 className="mt-1 text-xl font-black uppercase">{product.name}</h3>
-                  </article>
-                ))}
+                  ))}
+                </div>
+                <div className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                  {productCards.map((product) => (
+                    <article key={product.slug} className="group">
+                      <div className="relative aspect-square overflow-hidden bg-zinc-900">
+                        {product.images[0] ? (
+                          <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                        ) : (
+                          <div className="flex h-full w-full items-end bg-gradient-to-br from-zinc-800 via-zinc-900 to-black p-5">
+                            <div>
+                              <p className="text-xs font-black uppercase tracking-[.18em] text-race">{product.category}</p>
+                              <h3 className="mt-2 text-2xl font-black uppercase text-white">{product.name}</h3>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <p className="mt-4 text-xs font-black uppercase text-race">{product.category}</p>
+                      <h3 className="mt-1 text-xl font-black uppercase">{product.name}</h3>
+                    </article>
+                  ))}
+                </div>
               </div>
-            </>
-          )
+            </section>
+          );
+        }
       },
       CaseStudyShowcase: {
         fields: {
@@ -210,8 +264,14 @@ export function buildVisualPageConfig(catalog: VisualPageCatalog = {}): PuckConf
               <div className="mt-10 grid gap-8 lg:grid-cols-2">
                 {listFromSlugs(toLines(escape(projectSlugs)), projects).map((project) => (
                   <article key={project.slug}>
-                    <div className="relative aspect-[16/10] overflow-hidden">
-                      <img src={project.gallery[0]} alt={project.title} className="h-full w-full object-cover" />
+                    <div className="relative aspect-[16/10] overflow-hidden bg-zinc-900">
+                      {project.gallery[0] ? (
+                        <img src={project.gallery[0]} alt={project.title} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex h-full w-full items-end bg-gradient-to-br from-zinc-800 via-zinc-900 to-black p-5">
+                          <h3 className="text-2xl font-black uppercase text-white">{project.title}</h3>
+                        </div>
+                      )}
                     </div>
                     <p className="mt-5 text-xs font-bold uppercase text-race">
                       {project.location} · {project.year}
