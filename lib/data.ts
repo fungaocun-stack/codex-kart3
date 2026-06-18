@@ -1,6 +1,7 @@
 import { defaultSettings, getFallbackNavigation, getFallbackPages, getFallbackProducts, getFallbackProjects } from "./fallback-data";
+import { defaultSections } from "./cms";
 import { isSupabaseConfigured, serviceSupabase } from "./supabase";
-import type { Product, Project, SiteNavigation, SiteSettings, VisualPageRecord } from "./types";
+import type { HomepageSection, Product, Project, SiteNavigation, SiteSettings, VisualPageRecord } from "./types";
 
 function mergeSettings(data: SiteSettings | null | undefined): SiteSettings {
   const fallbackTheme = defaultSettings.theme ?? { primary: "#ff5a00", secondary: "#ffffff", background: "#070707" };
@@ -55,6 +56,12 @@ function hasRenderablePageContent(page: VisualPageRecord | undefined) {
   return Array.isArray(content) && content.length > 0;
 }
 
+async function getHomePageId() {
+  const { data, error } = await serviceSupabase().from("pages").select("id").eq("slug", "home").maybeSingle();
+  if (error || !data) return null;
+  return data.id as string;
+}
+
 export async function getProducts(): Promise<Product[]> {
   if (!isSupabaseConfigured() || !process.env.SUPABASE_SERVICE_ROLE_KEY) return getFallbackProducts();
   const { data } = await serviceSupabase().from("products").select("*").eq("published", true).order("sort_order");
@@ -93,5 +100,41 @@ export async function getPage(slug: string): Promise<VisualPageRecord | undefine
     return getFallbackPages().find((entry) => entry.slug === slug) ?? page;
   }
   return page;
+}
+
+export async function getHomepageSections(): Promise<HomepageSection[]> {
+  if (!isSupabaseConfigured() || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return defaultSections.map((section, index) => ({
+      section_type: section.section_type,
+      title: section.title,
+      description: section.description,
+      sort_order: index,
+      published: true
+    }));
+  }
+
+  const pageId = await getHomePageId();
+  if (!pageId) {
+    return defaultSections.map((section, index) => ({
+      section_type: section.section_type,
+      title: section.title,
+      description: section.description,
+      sort_order: index,
+      published: true
+    }));
+  }
+
+  const { data, error } = await serviceSupabase().from("page_sections").select("*").eq("page_id", pageId).eq("published", true).order("sort_order", { ascending: true });
+  if (error || !data?.length) {
+    return defaultSections.map((section, index) => ({
+      section_type: section.section_type,
+      title: section.title,
+      description: section.description,
+      sort_order: index,
+      published: true
+    }));
+  }
+
+  return data as HomepageSection[];
 }
 

@@ -24,6 +24,28 @@ export type SiteNavigation = {
   footer: NavigationLink[];
 };
 
+export type HomepageSectionContent = {
+  eyebrow?: string;
+  headline?: string;
+  description?: string;
+  cta_label?: string;
+  cta_url?: string;
+  media_url?: string;
+  items?: unknown[];
+  [key: string]: unknown;
+};
+
+export type HomepageSection = {
+  id?: string;
+  page_id?: string;
+  section_type: string;
+  title: string;
+  description?: string;
+  sort_order?: number;
+  published?: boolean;
+  content?: HomepageSectionContent | null;
+};
+
 export type VisualPageRecord = {
   id?: string;
   slug: string;
